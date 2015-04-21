@@ -1,0 +1,57 @@
+<DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="jquery.dataTables.css">
+    <script src="jquery-1.11.1.min.js"></script>
+    <script src="jquery.dataTables.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        $( document ).ready(function() {
+           console.log( "document loaded" );
+                            var tbl = $('#rt-hr-msg').DataTable({
+                                                                "searching": false,
+                                                                "columns": [
+                                                                            { "title": "Action"},
+                                                                            { "title": "Id" },
+                                                                            { "title": "Name" },
+                                                                            { "title": "Hire Date" },
+                                                                            { "title": "Salary" },
+                                                                            { "title": "Fulltime" },
+                                                                            { "title": "Vacation Days" },
+                                                                            { "title": "Comments" }
+                                                                            ]
+                                                                });
+           var srvrURL = window.location.protocol+'//'+window.location.host;
+           console.log(srvrURL);
+           var socketclient = io.connect(srvrURL);
+
+           socketclient.on('connect_fail', function() {
+             console.log('Connection failed!');
+           });
+           socketclient.on('connect', function(socket) {
+             console.log('Connected!');
+
+             socketclient.on('newMsg', function (data) {
+               console.log('data: '+data);
+               var msg = data.split("@@",2);
+               console.log(msg.length);
+               console.log( msg[1] );
+               //var fJSONStr = msg[1].replace(/=>/g, ": ");
+//               console.log( fJSONStr );
+               var jObj = jQuery.parseJSON(msg[1]);
+               console.log( jObj );
+               tbl.row.add([msg[0].charAt(0),jObj.employeeId,jObj.name,jObj.hireDate,jObj.salary,jObj.isFullTime,jObj.vacationDays,jObj.comments]).draw();
+              });
+              socketclient.on('disconnect', function() {
+                 console.log('Disconnected!');
+              });
+            });
+          });
+    </script>
+  </head>
+  <body>
+    <h1>Real-time HR Updates</h1>
+    <table id="rt-hr-msg" class="hover" cellspacing="0" width="100%">
+    </table>
+  </body>
+</html>

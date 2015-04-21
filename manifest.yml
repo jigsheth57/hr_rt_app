@@ -1,0 +1,9 @@
+---
+applications:
+- name: js-hr-rt-app 
+memory: 256M
+instances: 1
+path: .
+command: node index.js
+services:
+- rails-rabbitmq

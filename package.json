@@ -1,0 +1,14 @@
+{
+  "name": "hr_rt_app",
+  "version": "0.0.1",
+  "dependencies":{
+    "express":"*",
+    "cookie-parser":"*",
+    "cfenv":"*",
+    "amqp":"*",
+    "socket.io":"*",
+    "connect":"*",
+    "express-session":"*",
+    "cookie":"*"
+  }
+}
